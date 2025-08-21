@@ -5,76 +5,22 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Chat</title>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f9;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
-    .chat-container {
-      width: 100%;
-      max-width: 500px;
-      background: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0px 4px 15px rgba(0,0,0,0.1);
-      display: flex;
-      flex-direction: column;
-    }
-    .chat-box {
-      flex: 1;
-      overflow-y: auto;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-      padding: 10px;
-      margin-bottom: 10px;
-      max-height: 400px;
-    }
-    .message {
-      margin: 5px 0;
-      padding: 8px 12px;
-      border-radius: 8px;
-    }
-    .user {
-      background: #007bff;
-      color: white;
-      align-self: flex-end;
-    }
-    .bot {
-      background: #e9ecef;
-      align-self: flex-start;
-    }
-    .input-container {
-      display: flex;
-      gap: 10px;
-    }
-    input {
-      flex: 1;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 8px;
-    }
-    button {
-      padding: 10px 20px;
-      border: none;
-      border-radius: 8px;
-      background: #007bff;
-      color: white;
-      cursor: pointer;
-    }
-    button:hover {
-      background: #0056b3;
-    }
+    body { font-family: Arial, sans-serif; background: #f4f4f9; }
+    .chat-container { max-width: 500px; margin: 40px auto; padding: 20px; background: #fff; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    .chat-box { border: 1px solid #ddd; border-radius: 8px; padding: 10px; height: 400px; overflow-y: auto; }
+    .message { margin: 8px 0; padding: 10px; border-radius: 8px; max-width: 80%; }
+    .user { background: #007bff; color: #fff; margin-left: auto; }
+    .bot { background: #e9ecef; color: #000; margin-right: auto; }
+    .input-container { display: flex; margin-top: 10px; }
+    input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 8px; }
+    button { padding: 10px 20px; margin-left: 10px; border: none; border-radius: 8px; background: #007bff; color: #fff; cursor: pointer; }
   </style>
 </head>
 <body>
   <div class="chat-container">
     <div class="chat-box" id="chat-box"></div>
     <div class="input-container">
-      <input type="text" id="user-input" placeholder="Type your message...">
+      <input type="text" id="user-input" placeholder="Type a message...">
       <button onclick="sendMessage()">Send</button>
     </div>
   </div>
@@ -86,26 +32,24 @@
       const userMessage = input.value.trim();
       if (!userMessage) return;
 
-      // Add user message
       chatBox.innerHTML += `<div class="message user">${userMessage}</div>`;
       input.value = "";
       chatBox.scrollTop = chatBox.scrollHeight;
 
-      // Fetch response from API
       try {
-        const response = await fetch(`https://chatgpt-4.anshppt19.workers.dev/?prompt=${encodeURIComponent(userMessage)}`);
+        // 👇 Replace with your Render app URL
+        const url = `https://your-render-app.onrender.com/chat?prompt=${encodeURIComponent(userMessage)}`;
+        const response = await fetch(url);
         const data = await response.json();
 
-        // Add bot message
         chatBox.innerHTML += `<div class="message bot">${data.message}</div>`;
         chatBox.scrollTop = chatBox.scrollHeight;
-      } catch (error) {
-        chatBox.innerHTML += `<div class="message bot">⚠️ Error fetching response</div>`;
+      } catch (err) {
+        chatBox.innerHTML += `<div class="message bot">⚠️ Error: ${err.message}</div>`;
       }
     }
 
-    // Press Enter to send
-    document.getElementById("user-input").addEventListener("keypress", function(e) {
+    document.getElementById("user-input").addEventListener("keypress", (e) => {
       if (e.key === "Enter") sendMessage();
     });
   </script>
